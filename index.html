@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #2E8B57;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 2.5rem;
+            color: #fff;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative; /* Added to position the tooltip correctly */
+        }
+
+        .logo img {
+            width: 5.625rem;
+            margin-right: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1);
+        }
+
+        .logo span {
+            display: none;
+        }
+
+        .logo:hover span {
+            display: inline;
+        }
+
+        .logo .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            bottom: -40px; /* Adjusted to position it below the logo */
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-input {
+            padding: 0.75rem 2.5rem 0.75rem 1.25rem;
+            width: 100%;
+            border: none;
+            border-radius: 25px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #666;
+            font-style: italic;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+
+        .search-icon:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .search-icon:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .gallery-wrapper {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.25rem;
+            padding: 1.25rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .photo-container {
+            position: relative;
+            background-color: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .photo-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .description {
+            position: absolute;
+            bottom: 0.625rem;
+            left: 0.625rem;
+            right: 0.625rem;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.625rem;
+            border-radius: 0.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 1rem;
+        }
+
+        .photo-container:hover .description {
+            opacity: 1;
+            transform: translateY(0);
+            font-size: 0.875rem; /* Reduced font size on hover */
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 0.625rem;
+            right: 0.625rem;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .photo-container:hover .download-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .download-btn img {
+            width: 2.8125rem;
+            height: auto;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: #777;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .action-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-family: 'Cinzel', serif;
+        }
+
+        #loadMoreBtn {
+            background-color: #4D90FE; /* Blue color */
+            color: white;
+        }
+
+        #hireBtn {
+            background-color: #2E8B57; /* Green color */
+            color: white;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-button .emoji {
+            margin-right: 8px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover .tooltip,
+        .logo:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo {
+                font-size: 1.75rem;
+            }
+
+            .logo img {
+                width: 3.75rem;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+
+            #gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 200px));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="logo.webp" alt="Logo">
+            <span class="tooltip logo-tooltip">View all of our Projects, To Be Released Soon</span>
+            The Fox's Gallery
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search by tags..." id="searchInput">
+            <span class="search-icon" id="searchIcon">🔍</span>
+        </div>
+    </header>
+
+    <div class="gallery-wrapper">
+        <main id="gallery"></main>
+    </div>
+
+    <footer>
+        <div class="button-container">
+            <button id="loadMoreBtn" class="action-button">
+                <span class="emoji">🔄  
+                </span> Load More
+                <span class="tooltip">Click to load 20 more amazing photos!</span>
+            </button>
+            <button id="hireBtn" class="action-button">
+                <span class="emoji">💰</span> Hire Me
+                <span class="tooltip">Secure a gig for my services on Fiverr, with packages starting at $15 for a set of 30 premium-quality photos</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="photos.js"></script>
+    <script>
+        let currentIndex = 0;
+        const photosPerLoad = 20;
+        let shuffledPhotos = [];
+
+        function shuffleArray(array) {
+            let currentArray = [...array];
+            for (let i = currentArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentArray[i], currentArray[j]] = [currentArray[j], currentArray[i]];
+            }
+            return currentArray;
+        }
+
+        function openFullSizePhoto(url) {
+            const fullSizeUrl = url;
+            window.open(fullSizeUrl, '_blank');
+        }
+
+        function createPhotoElement(photo) {
+            const template = `
+                <div class="photo-container">
+                    <img src="${photo.url}" alt="${photo.tags.join(', ')}" loading="lazy">
+                    <div class="description">${photo.description}</div>
+                    <button class="download-btn" aria-label="Download image">
+                        <img src="Download_button_3.png" alt="">
+                    </button>
+                </div>
+            `;
+            const container = document.createElement('div');
+            container.innerHTML = template;
+            const downloadBtn = container.querySelector('.download-btn');
+            
+            downloadBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openFullSizePhoto(photo.url);
+            });
+            
+            return container.firstElementChild;
+        }
+
+        function loadPhotos(searchTerm = '') {
+            const gallery = document.getElementById('gallery');
+            const endIndex = currentIndex + photosPerLoad;
+            
+            let photosToDisplay = searchTerm
+                ? shuffledPhotos.filter(photo =>
+                    photo.tags.some(tag =>
+                        tag.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                )
+                : shuffledPhotos;
+
+            const fragment = document.createDocumentFragment();
+            
+            if (searchTerm) {
+                gallery.innerHTML = '';
+                currentIndex = 0;
+            }
+
+            photosToDisplay
+                .slice(currentIndex, endIndex)
+                .forEach(photo => {
+                    fragment.appendChild(createPhotoElement(photo));
+                });
+
+            gallery.appendChild(fragment);
+            currentIndex = endIndex;
+
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            loadMoreBtn.style.display = currentIndex >= photosToDisplay.length ? 'none' : 'block';
+        }
+
+        function initGallery() {
+            shuffledPhotos = shuffleArray(photos);
+            
+            const searchInput = document.getElementById('searchInput');
+            const searchIcon = document.getElementById('searchIcon');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const hireBtn = document.getElementById('hireBtn');
+
+            loadPhotos();
+
+            searchIcon.addEventListener('click', () => {
+                currentIndex = 0;
+                loadPhotos(searchInput.value);
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    currentIndex = 0;
+                    loadPhotos(searchInput.value);
+                }
+            });
+
+            loadMoreBtn.addEventListener('click', () => {
+                loadPhotos(searchInput.value);
+            });
+
+            hireBtn.addEventListener('click', () => {
+                window.location.href = 'https://www.fiverr.com/valerosca/generate-ai-images-for-you';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initGallery);
+    </script>
+</body>
+</html>
