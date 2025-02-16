@@ -54,5 +54,13 @@ const photos = [
     { url: "Album_IMG/54.webp", tags: ["Dragon", "Cliff", "Fantasy"], description: "A red dragon on a cliff" },
     { url: "Album_IMG/55.webp", tags: ["Abandoned", "Castle", "Frozen Lake"], description: "An abandoned castle on a frozen lake" },
     { url: "Album_IMG/56.webp", tags: ["Hagrid", "Young", "Fantasy"], description: "A young Hagrid in a magical world" },
-    { url: "Album_IMG/57.webp", tags: ["Voldemort", "Young", "Villain"], description: "A young Voldemort with a dark look" }
+    { url: "Album_IMG/57.webp", tags: ["Voldemort", "Young", "Villain"], description: "A young Voldemort with a dark look" },
+    { url: "Album_IMG/58.webp", tags: ["Redhead", "Model", "Beauty"], description: "A beautiful redhead model with striking features" },  
+    { url: "Album_IMG/59.webp", tags: ["Silver Hair", "Portrait", "Model"], description: "A stunning portrait of a model with silver hair" },  
+    { url: "Album_IMG/60.webp", tags: ["Black Model", "Dark Hair", "Portrait"], description: "A beautiful portrait of a black model with dark hair" },  
+    { url: "Album_IMG/61.webp", tags: ["New York", "1960s", "Streets"], description: "A nostalgic view of New York streets in the 1960s" },  
+    { url: "Album_IMG/62.webp", tags: ["Retro", "Japan", "Street"], description: "A vintage street scene capturing the charm of retro Japan" },  
+    { url: "Album_IMG/63.webp", tags: ["Tokyo", "Nightlife", "Modern"], description: "A vibrant look at modern Tokyo nightlife" },  
+    { url: "Album_IMG/64.webp", tags: ["Medieval", "Tokyo", "Historical"], description: "A fascinating depiction of medieval Tokyo" }  
+
 ];           
